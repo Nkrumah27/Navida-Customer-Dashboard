@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  .font-serif {
+    font-family: "Fraunces", serif;
+  }
+  input[type="file"] {
+    display: none;
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.navy-light");
+    outline-offset: 2px;
+  }
+}
