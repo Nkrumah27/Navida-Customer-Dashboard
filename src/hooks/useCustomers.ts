@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Customer, Purpose } from "../types";
 import { uid } from "../utils";
 
@@ -14,9 +14,30 @@ export interface NewCustomerInput {
   photo: string | null;
 }
 
+const STORAGE_KEY = "navida.customers";
+
+function loadCustomers(): Customer[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export function useCustomers() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>(loadCustomers);
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
+    } catch {
+      // storage unavailable or quota exceeded; data stays in-memory only
+    }
+  }, [customers]);
 
   function addCustomer(input: NewCustomerInput) {
     const totalAmount = Math.round(input.totalAmount * 100) / 100;
